@@ -22,21 +22,26 @@ jobs:
       - name: Pull, tag, and push images
         run: |
           images=(
-            "b2bi"
-            "b2bi-dbsetup"
-            "b2bi-purge"
-            "b2bi-ps"
-            "b2bi-resources"
+            "b2bi:6.2.0.0"
+            "b2bi-dbsetup:6.2.0.0"
+            "b2bi-purge:6.2.0.0"
+            "b2bi-ps:6.2.0.0"
+            "b2bi-resources:6.2.0.0"
             "b2bi-documentservice:1.0.0.0"
           )
-          
-          for image in "${images[@]}"; do
-            src="cp.icr.io/cp/ibm-b2bi/${image}"
-            tag=${image#*:}
-            name=${image%%:*}
-            [ -z "$tag" ] && tag="6.2.0.0"
 
-            docker pull $src
-            docker tag $src docker.io/${{ secrets.DOCKER_USERNAME }}/$name:$tag
-            docker push docker.io/${{ secrets.DOCKER_USERNAME }}/$name:$tag
+          for image in "${images[@]}"; do
+            name=${image%%:*}
+            tag=${image##*:}
+            src="cp.icr.io/cp/ibm-b2bi/${name}:${tag}"
+            dest="docker.io/${{ secrets.DOCKER_USERNAME }}/${name}:${tag}"
+
+            echo "Pulling $src"
+            docker pull "$src"
+
+            echo "Tagging $src as $dest"
+            docker tag "$src" "$dest"
+
+            echo "Pushing $dest"
+            docker push "$dest"
           done
