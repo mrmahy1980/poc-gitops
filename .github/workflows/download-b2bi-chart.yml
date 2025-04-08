@@ -12,38 +12,50 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repo
-      uses: actions/checkout@v4
+      - name: Checkout Repo
+        uses: actions/checkout@v4
 
-    - name: Download and Extract Helm Chart
-      run: |
-        CHART_VERSION="${{ github.event.inputs.version }}"
-        CHART_FILE="ibm-b2bi-prod-${CHART_VERSION}.tgz"
-        CHART_URL="https://github.com/IBM/charts/raw/master/repo/ibm-helm/${CHART_FILE}"
+      - name: Prepare
+        run: |
+          mkdir -p ibm/b2bi
+          echo "🗃️ Clean folder state:"
+          rm -rf ibm/b2bi/* || true
 
-        echo "====================================================="
-        echo "📥 Downloading Helm chart version: $CHART_VERSION"
-        echo "📦 Target file: $CHART_FILE"
-        echo "🌐 URL: $CHART_URL"
-        echo "====================================================="
+      - name: Download and Extract Helm Chart
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          FILE="ibm-b2bi-prod-${VERSION}.tgz"
+          URL="https://github.com/IBM/charts/raw/master/repo/ibm-helm/${FILE}"
+          TMP="/tmp/${FILE}"
 
-        mkdir -p ibm/b2bi
-        curl -L -o "/tmp/$CHART_FILE" "$CHART_URL"
+          echo "📦 Preparing to download chart: $FILE"
+          echo "🔍 Checking if URL is valid..."
 
-        echo "✅ Download complete. Inspecting file type:"
-        file "/tmp/$CHART_FILE"
+          if curl --head --fail --silent "$URL"; then
+            echo "✅ URL exists. Proceeding with download."
+          else
+            echo "❌ Chart not found at $URL"
+            exit 1
+          fi
 
-        echo "📦 Attempting to extract archive..."
-        tar -xzvf "/tmp/$CHART_FILE" -C ibm/b2bi || {
-          echo "❌ Extraction failed! Likely not a valid gzip file."
-          exit 1
-        }
+          echo "📥 Downloading Helm chart..."
+          curl -L -o "$TMP" "$URL"
 
-    - name: Commit and Push Chart
-      run: |
-        git config user.name "github-actions"
-        git config user.email "github-actions@users.noreply.github.com"
+          echo "🔍 Inspecting file type:"
+          file "$TMP"
 
-        git add ibm/b2bi
-        git commit -m "Add IBM B2Bi Helm chart version ${{ github.event.inputs.version }}"
-        git push
+          if file "$TMP" | grep -q "gzip compressed data"; then
+            echo "✅ File is a valid gzip. Extracting..."
+            tar -xzvf "$TMP" -C ibm/b2bi
+          else
+            echo "❌ Downloaded file is not a valid gzip archive. Aborting."
+            exit 1
+          fi
+
+      - name: Commit and Push Chart
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add ibm/b2bi
+          git commit -m "Add B2Bi chart version ${{ github.event.inputs.version }}" || echo "No changes to commit"
+          git push
