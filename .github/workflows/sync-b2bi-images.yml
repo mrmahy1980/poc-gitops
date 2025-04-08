@@ -31,17 +31,17 @@ jobs:
           )
 
           for image in "${images[@]}"; do
-            name=${image%%:*}
-            tag=${image##*:}
-            src="cp.icr.io/cp/ibm-b2bi/${name}:${tag}"
-            dest="docker.io/${{ secrets.DOCKER_USERNAME }}/${name}:${tag}"
+            name="${image%%:*}"
+            tag="${image##*:}"
+            src="cp.icr.io/cp/ibm-b2bi/$name:$tag"
+            dst="docker.io/${{ secrets.DOCKER_USERNAME }}/$name:$tag"
 
-            echo "Pulling $src"
-            docker pull "$src"
+            echo "Pulling $src..."
+            docker pull $src
 
-            echo "Tagging $src as $dest"
-            docker tag "$src" "$dest"
+            echo "Tagging $src as $dst..."
+            docker tag $src $dst
 
-            echo "Pushing $dest"
-            docker push "$dest"
+            echo "Pushing $dst..."
+            docker push $dst
           done
