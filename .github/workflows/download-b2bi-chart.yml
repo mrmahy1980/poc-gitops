@@ -1,61 +1,48 @@
-name: Fetch IBM B2Bi Helm Chart
-
-on:
-  workflow_dispatch:
-    inputs:
-      version:
-        description: 'Chart version (e.g., 3.0.6)'
-        required: true
-
-jobs:
-  fetch-b2bi-chart:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repo
-        uses: actions/checkout@v4
-
-      - name: Prepare
-        run: |
-          mkdir -p ibm/b2bi
-          echo "🗃️ Clean folder state:"
-          rm -rf ibm/b2bi/* || true
-
       - name: Download and Extract Helm Chart
         run: |
           VERSION="${{ github.event.inputs.version }}"
-          FILE="ibm-b2bi-prod-${VERSION}.tgz"
-          URL="https://github.com/IBM/charts/raw/master/repo/ibm-helm/${FILE}"
-          TMP="/tmp/${FILE}"
+          REPO_URL="https://github.com/IBM/charts/raw/master/repo/ibm-helm/"
+          CHART_NAME="ibm-b2bi-prod-${VERSION}.tgz"
+          DEST_DIR="ibm/b2bi"
 
-          echo "📦 Preparing to download chart: $FILE"
-          echo "🔍 Checking if URL is valid..."
+          mkdir -p "$DEST_DIR"
+          cd "$DEST_DIR"
 
-          if curl --head --fail --silent "$URL"; then
-            echo "✅ URL exists. Proceeding with download."
+          echo "🔍 Looking for chart: $CHART_NAME"
+
+          # Check if the file exists remotely
+          STATUS=$(curl -o /dev/null -s -w "%{http_code}" "${REPO_URL}${CHART_NAME}")
+          if [ "$STATUS" != "200" ]; then
+            echo "❌ Chart not found at ${REPO_URL}${CHART_NAME}"
+            echo "Trying to locate file via listing..."
+
+            # Try to get a list of charts and extract matching name
+            INDEX_URL="https://raw.githubusercontent.com/IBM/charts/master/repo/ibm-helm/index.yaml"
+            MATCHED=$(curl -s $INDEX_URL | grep "name: ibm-b2bi-prod" -A 5 | grep "$VERSION" | grep url | grep ".tgz" | head -n1 | sed 's/.*url: //')
+
+            if [ -z "$MATCHED" ]; then
+              echo "❌ No chart found for version $VERSION in index.yaml"
+              exit 1
+            fi
+
+            CHART_URL="${REPO_URL}${MATCHED}"
+            echo "✅ Found chart URL: $CHART_URL"
           else
-            echo "❌ Chart not found at $URL"
-            exit 1
+            CHART_URL="${REPO_URL}${CHART_NAME}"
+            echo "✅ Chart URL is valid: $CHART_URL"
           fi
 
-          echo "📥 Downloading Helm chart..."
-          curl -L -o "$TMP" "$URL"
+          echo "📥 Downloading chart..."
+          curl -LO "$CHART_URL"
 
-          echo "🔍 Inspecting file type:"
-          file "$TMP"
+          FILE_NAME=$(basename "$CHART_URL")
+          echo "🧪 Checking file type for $FILE_NAME"
+          file "$FILE_NAME"
 
-          if file "$TMP" | grep -q "gzip compressed data"; then
-            echo "✅ File is a valid gzip. Extracting..."
-            tar -xzvf "$TMP" -C ibm/b2bi
+          if file "$FILE_NAME" | grep -q "gzip compressed data"; then
+            echo "📦 Extracting chart..."
+            tar -xzf "$FILE_NAME"
           else
-            echo "❌ Downloaded file is not a valid gzip archive. Aborting."
+            echo "❌ Downloaded file is not a valid gzip archive."
             exit 1
           fi
-
-      - name: Commit and Push Chart
-        run: |
-          git config user.name "github-actions"
-          git config user.email "github-actions@github.com"
-          git add ibm/b2bi
-          git commit -m "Add B2Bi chart version ${{ github.event.inputs.version }}" || echo "No changes to commit"
-          git push
