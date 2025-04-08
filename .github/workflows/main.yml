@@ -1,0 +1,40 @@
+name: Download IBM B2Bi Helm Chart
+
+on:
+  workflow_dispatch:
+    inputs:
+      chart_version:
+        description: 'IBM B2Bi chart version (e.g. 6.2.0)'
+        required: true
+        default: '6.2.0'
+
+jobs:
+  fetch-b2bi-chart:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          version: v3.14.0
+
+      - name: Add IBM Helm Repo
+        run: |
+          helm repo add ibm-charts https://raw.githubusercontent.com/IBM/charts/master/repo/community
+          helm repo update
+
+      - name: Download B2Bi Chart
+        run: |
+          mkdir -p ibm/b2bi
+          helm pull ibm-charts/ibm-b2bi --version ${{ github.event.inputs.chart_version }} --untar --untardir ibm/b2bi
+
+      - name: Commit and Push Chart
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add ibm/b2bi
+          git commit -m "Add IBM B2Bi Helm chart version ${{ github.event.inputs.chart_version }}"
+          git push
