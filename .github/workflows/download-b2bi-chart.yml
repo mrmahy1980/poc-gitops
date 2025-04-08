@@ -18,15 +18,26 @@ jobs:
     - name: Download and Extract Helm Chart
       run: |
         CHART_VERSION="${{ github.event.inputs.version }}"
-        CHART_NAME="ibm-b2bi-prod-${CHART_VERSION}.tgz"
-        CHART_URL="https://github.com/IBM/charts/raw/master/repo/ibm-helm/${CHART_NAME}"
+        CHART_FILE="ibm-b2bi-prod-${CHART_VERSION}.tgz"
+        CHART_URL="https://github.com/IBM/charts/raw/master/repo/ibm-helm/${CHART_FILE}"
 
-        echo "Fetching chart from: $CHART_URL"
+        echo "====================================================="
+        echo "📥 Downloading Helm chart version: $CHART_VERSION"
+        echo "📦 Target file: $CHART_FILE"
+        echo "🌐 URL: $CHART_URL"
+        echo "====================================================="
+
         mkdir -p ibm/b2bi
-        curl -L -o /tmp/b2bi.tgz "$CHART_URL"
+        curl -L -o "/tmp/$CHART_FILE" "$CHART_URL"
 
-        echo "Extracting chart to ibm/b2bi/"
-        tar -xzf /tmp/b2bi.tgz -C ibm/b2bi
+        echo "✅ Download complete. Inspecting file type:"
+        file "/tmp/$CHART_FILE"
+
+        echo "📦 Attempting to extract archive..."
+        tar -xzvf "/tmp/$CHART_FILE" -C ibm/b2bi || {
+          echo "❌ Extraction failed! Likely not a valid gzip file."
+          exit 1
+        }
 
     - name: Commit and Push Chart
       run: |
