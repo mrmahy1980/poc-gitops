@@ -1,38 +1,37 @@
-postgresql:
-  auth:
-    username: bots
-    password: bots123
-    database: botsdb
+auth:
+  username: bots
+  password: bots123
+  database: botsdb
 
-  primary:
-    persistence:
-      enabled: false
-
-  service:
-    type: ClusterIP
-    port: 5432
-
-  serviceAccount:
-    create: true
-
-  ingress:
+primary:
+  persistence:
     enabled: false
 
-  image:
-    repository: bitnami/postgresql
-    tag: 14.7.0-debian-11-r0
-    pullPolicy: IfNotPresent
+service:
+  type: ClusterIP
+  port: 5432
 
-  resources:
-    limits:
-      cpu: 500m
-      memory: 512Mi
-    requests:
-      cpu: 250m
-      memory: 256Mi
+serviceAccount:
+  create: true
 
-  autoscaling:
-    enabled: false
-    minReplicas: 1
-    maxReplicas: 3
-    targetCPUUtilizationPercentage: 80
+ingress:
+  enabled: false
+
+image:
+  repository: bitnami/postgresql
+  tag: 14.7.0-debian-11-r0
+  pullPolicy: IfNotPresent
+
+resources:
+  limits:
+    cpu: 500m
+    memory: 512Mi
+  requests:
+    cpu: 250m
+    memory: 256Mi
+
+autoscaling:
+  enabled: false
+  minReplicas: 1
+  maxReplicas: 3
+  targetCPUUtilizationPercentage: 80
