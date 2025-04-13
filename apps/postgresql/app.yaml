@@ -6,22 +6,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://charts.bitnami.com/bitnami
-    chart: postgresql
-    targetRevision: 12.8.0
-    helm:
-      parameters:
-        - name: auth.username
-          value: bots
-        - name: auth.password
-          value: bots123
-        - name: auth.database
-          value: botsdb
-        - name: primary.persistence.enabled
-          value: "false"
+    repoURL: https://github.com/mrmahy1980/poc-gitops.git
+    targetRevision: HEAD
+    path: helm-values/postgresql
   destination:
     server: https://kubernetes.default.svc
-    namespace: pg-test
+    namespace: postgresql
   syncPolicy:
     automated:
       prune: true
