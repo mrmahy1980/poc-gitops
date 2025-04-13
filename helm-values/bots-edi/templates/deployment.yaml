@@ -18,3 +18,12 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - containerPort: 8080
+          env:
+            - name: BOTS_DB_HOST
+              value: pg-postgresql.pg-test.svc.cluster.local
+            - name: BOTS_DB_NAME
+              value: botsdb
+            - name: BOTS_DB_USER
+              value: bots
+            - name: BOTS_DB_PASS
+              value: bots123
