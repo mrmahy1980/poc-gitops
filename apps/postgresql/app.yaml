@@ -8,20 +8,20 @@ spec:
   source:
     repoURL: https://charts.bitnami.com/bitnami
     chart: postgresql
-    targetRevision: 12.8.0
+    targetRevision: 16.6.3
     helm:
-      valueFiles:
-        - values.yaml
       parameters:
-        - name: "auth.database"
-          value: "botsdb"
-        - name: "auth.username"
-          value: "bots"
-        - name: "auth.password"
-          value: "bots123"
+        - name: auth.username
+          value: bots
+        - name: auth.password
+          value: bots123
+        - name: auth.database
+          value: botsdb
+        - name: primary.persistence.enabled
+          value: "false"
   destination:
     server: https://kubernetes.default.svc
-    namespace: bots-edi
+    namespace: pg-test
   syncPolicy:
     automated:
       prune: true
