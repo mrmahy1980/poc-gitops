@@ -8,7 +8,9 @@ primary:
     enabled: false
 
 service:
+  type: ClusterIP
   port: 5432
+
 
 serviceAccount:
   create: true
