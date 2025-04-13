@@ -1,8 +1,8 @@
-# Trigger ArgoCD sync - test change
 auth:
   username: bots
   password: bots123
   database: botsdb
+
 primary:
   persistence:
     enabled: false
