@@ -1,3 +1,4 @@
+# Trigger ArgoCD sync - test change
 auth:
   username: bots
   password: bots123
