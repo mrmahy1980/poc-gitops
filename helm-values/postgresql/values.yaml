@@ -2,9 +2,13 @@ auth:
   username: bots
   password: bots123
   database: botsdb
+
 primary:
   persistence:
     enabled: false
 
 service:
   port: 5432
+
+serviceAccount:
+  create: true
