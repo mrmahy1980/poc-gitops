@@ -1,8 +1,6 @@
 image:
   repository: mrmahy/bots-edi
-  tag: v2
+  tag: v3
   pullPolicy: Always
 
-service:
-  type: ClusterIP
-  port: 8080
+replicaCount: 1
