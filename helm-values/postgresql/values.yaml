@@ -1,0 +1,8 @@
+auth:
+  username: bots
+  password: bots123
+  database: botsdb
+
+primary:
+  service:
+    port: 5432
