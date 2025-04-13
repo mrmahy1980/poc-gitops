@@ -1,10 +1,5 @@
-﻿replicaCount: 1
-
 image:
-  repository: ghcr.io/bots-edi/bots
+  pullPolicy: Always
   tag: latest
-  pullPolicy: IfNotPresent
+  repository: mrmahy/bots-edi
 
-service:
-  type: ClusterIP
-  port: 8080
