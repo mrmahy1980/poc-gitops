@@ -1,8 +1,14 @@
 fullnameOverride: postgresql
+image:
+  repository: postgres
+  tag: "15"
 auth:
   username: admin
   password: changeme
   database: appdb
+service:
+  enabled: true
+  port: 5432
 primary:
   persistence:
     enabled: false
