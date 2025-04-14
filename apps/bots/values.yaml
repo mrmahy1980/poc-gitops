@@ -1,0 +1,13 @@
+replicaCount: 1
+image:
+  repository: bots/bots
+  tag: latest
+  pullPolicy: IfNotPresent
+service:
+  type: NodePort
+  port: 8080
+  nodePort: 30090
+persistence:
+  enabled: true
+  path: /home/bots/env
+  size: 1Gi

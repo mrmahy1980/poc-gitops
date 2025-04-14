@@ -1,0 +1,6 @@
+apiVersion: v2
+name: bots
+description: Bots Open Source EDI Translator
+type: application
+version: 0.1.0
+appVersion: "latest"

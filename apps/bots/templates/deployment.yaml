@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bots
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bots
+  template:
+    metadata:
+      labels:
+        app: bots
+    spec:
+      containers:
+      - name: bots
+        image: bots/bots:latest
+        ports:
+        - containerPort: 8080
+        volumeMounts:
+        - name: edi-config
+          mountPath: /home/bots/env
+      volumes:
+      - name: edi-config
+        persistentVolumeClaim:
+          claimName: bots-pvc
