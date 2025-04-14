@@ -1,6 +1,6 @@
 replicaCount: 1
 image:
-  repository: bots/bots
+  repository: subtenoit/bots-edi
   tag: latest
   pullPolicy: IfNotPresent
 service:
