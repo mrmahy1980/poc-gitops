@@ -1,0 +1,8 @@
+fullnameOverride: postgresql
+auth:
+  username: admin
+  password: changeme
+  database: appdb
+primary:
+  persistence:
+    enabled: false
