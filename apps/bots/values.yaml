@@ -1,7 +1,7 @@
 replicaCount: 1
 image:
-  repository: subtenoit/bots-edi
-  tag: latest
+  repository: ghcr.io/bots-edi/bots
+  tag: 3.2.0
   pullPolicy: IfNotPresent
 service:
   type: NodePort
