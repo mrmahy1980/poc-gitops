@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: ghcr.io/open-edi/openedi
   pullPolicy: IfNotPresent
   tag: latest
 
