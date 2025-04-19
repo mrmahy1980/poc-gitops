@@ -1,4 +1,0 @@
-﻿apiVersion: v2
-name: bots-edi
-description: Helm chart to deploy Bots EDI
-version: 0.1.0
