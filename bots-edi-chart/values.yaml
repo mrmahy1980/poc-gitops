@@ -1,0 +1,12 @@
+replicaCount: 1
+
+image:
+  repository: mrmahy/bots-edi
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9000
+
+resources: {}

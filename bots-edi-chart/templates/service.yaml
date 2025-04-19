@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: bots-edi
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: bots-edi
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: 9000

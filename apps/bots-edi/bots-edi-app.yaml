@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bots-edi
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/mrmahy1980/poc-gitops
+    targetRevision: HEAD
+    path: bots-edi-chart
+    helm:
+      valueFiles:
+        - ../helm-values/bots-edi/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: edi
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

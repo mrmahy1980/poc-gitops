@@ -1,7 +1,7 @@
 image:
   repository: mrmahy/bots-edi
-  tag: v4
-  pullPolicy: Always
+  tag: latest
+  pullPolicy: IfNotPresent
 
 env:
   - name: DATABASE_HOST
@@ -18,4 +18,6 @@ env:
 
 service:
   type: ClusterIP
-  port: 8080
+  port: 9000
+
+resources: {}
