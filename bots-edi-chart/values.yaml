@@ -1,9 +1,20 @@
-replicaCount: 1
-
 image:
   repository: mrmahy/bots-edi
   tag: latest
   pullPolicy: IfNotPresent
+
+env:
+  - name: DATABASE_HOST
+    value: postgresql.postgresql.svc.cluster.local
+  - name: DATABASE_NAME
+    value: botsdb
+  - name: DATABASE_USER
+    value: bots
+  - name: DATABASE_PASSWORD
+    valueFrom:
+      secretKeyRef:
+        name: postgresql
+        key: password
 
 service:
   type: ClusterIP
