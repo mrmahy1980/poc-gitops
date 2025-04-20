@@ -3,9 +3,9 @@ kind: Service
 metadata:
   name: bots-edi
 spec:
-  type: {{ .Values.service.type }}
+  type: {{ .Values.service.type | default "ClusterIP" }}
   selector:
     app: bots-edi
   ports:
-    - port: {{ .Values.service.port }}
+    - port: {{ .Values.service.port | default 9000 }}
       targetPort: 9000
