@@ -5,7 +5,7 @@ metadata:
   labels:
     app: bots-edi
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: {{ .Values.replicaCount | default 1 }}
   selector:
     matchLabels:
       app: bots-edi
@@ -16,7 +16,19 @@ spec:
     spec:
       containers:
         - name: bots-edi
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          image: "{{ .Values.image.repository | default "mrmahy/bots-edi" }}:{{ .Values.image.tag | default "latest" }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy | default "IfNotPresent" }}
           ports:
             - containerPort: 9000
+          env:
+            - name: DATABASE_HOST
+              value: {{ .Values.env.DB_HOST | default "postgresql.postgresql.svc.cluster.local" | quote }}
+            - name: DATABASE_NAME
+              value: {{ .Values.env.DB_NAME | default "botsdb" | quote }}
+            - name: DATABASE_USER
+              value: {{ .Values.env.DB_USER | default "bots" | quote }}
+            - name: DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ .Values.env.DB_SECRET_NAME | default "postgresql" | quote }}
+                  key: {{ .Values.env.DB_SECRET_KEY | default "password" | quote }}
