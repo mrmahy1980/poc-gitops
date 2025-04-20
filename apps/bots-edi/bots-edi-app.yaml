@@ -6,12 +6,9 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/mrmahy1980/poc-gitops
+    repoURL: https://github.com/mrmahy1980/poc-gitops.git
     targetRevision: HEAD
     path: bots-edi-chart
-    helm:
-      valueFiles:
-        - ../helm-values/bots-edi/values.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: edi
