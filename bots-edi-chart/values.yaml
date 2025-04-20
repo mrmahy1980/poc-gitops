@@ -11,3 +11,7 @@ env:
   DB_USER: bots
   DB_SECRET_NAME: postgresql
   DB_SECRET_KEY: password
+
+service:
+  type: ClusterIP
+  port: 9000
