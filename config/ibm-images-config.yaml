@@ -1,5 +1,5 @@
-push_registry: ss151camdmzue2acr.azurecr.io/dflink
-
+#push_registry: ss151camdmzue2acr.azurecr.io/dflink
+push_registry: docker.io/mrmahy1980  # <-- for testing with Docker Hub
 images:
   - name: ibm-ssp-cm/ssp-cm-docker-image
     tag: 6.1.0.0.05
