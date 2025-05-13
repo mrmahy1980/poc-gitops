@@ -16,17 +16,17 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y yq
 
-      - name: Log in to IBM and Azure Registries
+      - name: Log in to IBM and Docker Hub
         env:
           ENTITLED_REGISTRY_USER: ${{ secrets.ENTITLED_REGISTRY_USER }}
           ENTITLED_REGISTRY_KEY: ${{ secrets.ENTITLED_REGISTRY_KEY }}
-          ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
-          ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
         run: |
           echo "$ENTITLED_REGISTRY_KEY" | docker login cp.icr.io -u "$ENTITLED_REGISTRY_USER" --password-stdin
-          echo "$ACR_PASSWORD" | docker login ss151camdmzue2acr.azurecr.io -u "$ACR_USERNAME" --password-stdin
+          echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-      - name: Pull and Tag IBM Images
+      - name: Pull, Tag, and Push IBM Images to Docker Hub
         run: |
           config_file=config/ibm-images-config.yaml
           push_registry=$(yq '.push_registry' $config_file)
@@ -42,8 +42,9 @@ jobs:
             echo "Pulling $src..."
             docker pull "$src"
 
-            echo "Tagging $src as $dst..."
+            echo "Tagging as $dst..."
             docker tag "$src" "$dst"
 
-            echo "Tagged image: $dst"
+            echo "Pushing to Docker Hub: $dst"
+            docker push "$dst"
           done
