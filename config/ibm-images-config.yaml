@@ -1,0 +1,13 @@
+push_registry: ss151camdmzue2acr.azurecr.io/dflink
+
+images:
+  - name: ibm-ssp-cm/ssp-cm-docker-image
+    tag: 6.1.0.0.05
+  - name: ibm-ssp-engine/ssp-engine-docker-image
+    tag: 6.1.0.0.05
+  - name: ibm-ssp-ps/ssp-ps-docker-image
+    tag: 6.1.0.0.05
+  - name: ibm-scc/ibmscc
+    tag: 6.3.1.0_iFix02_2024-08-26
+  - name: ibm-seas/seas-docker-image
+    tag: 6.1.0.1.01
