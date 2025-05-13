@@ -1,13 +1,15 @@
 #push_registry: ss151camdmzue2acr.azurecr.io/dflink
 push_registry: docker.io/mrmahy1980  # <-- for testing with Docker Hub
 images:
-  - name: ibm-ssp-cm/ssp-cm-docker-image
-    tag: 6.1.0.0.05
-  - name: ibm-ssp-engine/ssp-engine-docker-image
-    tag: 6.1.0.0.05
-  - name: ibm-ssp-ps/ssp-ps-docker-image
-    tag: 6.1.0.0.05
-  - name: ibm-scc/ibmscc
-    tag: 6.3.1.0_iFix02_2024-08-26
-  - name: ibm-seas/seas-docker-image
-    tag: 6.1.0.1.01
+  - name: ibm-b2bi/b2bi
+    tag: 6.1.2.2
+  - name: ibm-b2bi/b2bi-dbsetup
+    tag: 6.1.2.2
+  - name: ibm-b2bi/b2bi-purge
+    tag: 6.1.2.2
+  - name: ibm-b2bi/b2bi-ps
+    tag: 6.1.2.2
+  - name: ibm-b2bi/b2bi-resources
+    tag: 6.1.2.2
+  - name: opencontent-common-utils
+    tag: 1.1.60
