@@ -37,7 +37,8 @@ jobs:
             tag=$(yq ".images[$i].tag" $config_file)
 
             src="cp.icr.io/cp/$name:$tag"
-            dst="$push_registry/$name:$tag"
+            basename=$(basename "$name")
+            dst="$push_registry/$basename:$tag"
 
             echo "Pulling $src..."
             docker pull "$src"
