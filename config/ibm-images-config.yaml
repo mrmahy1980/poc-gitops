@@ -1,5 +1,5 @@
 #push_registry: ss151camdmzue2acr.azurecr.io/dflink
-push_registry: docker.io/mrmahy1980  # <-- for testing with Docker Hub
+push_registry: docker.io/mrmahy  # <-- for testing with Docker Hub
 images:
   - name: ibm-b2bi/b2bi
     tag: 6.1.2.2
