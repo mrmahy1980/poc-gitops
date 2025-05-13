@@ -1,0 +1,49 @@
+name: Download IBM Images
+
+on:
+  workflow_dispatch:
+
+jobs:
+  download-ibm-images:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v4
+
+      - name: Install yq for YAML parsing
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y yq
+
+      - name: Log in to IBM and Azure Registries
+        env:
+          ENTITLED_REGISTRY_USER: ${{ secrets.ENTITLED_REGISTRY_USER }}
+          ENTITLED_REGISTRY_KEY: ${{ secrets.ENTITLED_REGISTRY_KEY }}
+          ACR_USERNAME: ${{ secrets.ACR_USERNAME }}
+          ACR_PASSWORD: ${{ secrets.ACR_PASSWORD }}
+        run: |
+          echo "$ENTITLED_REGISTRY_KEY" | docker login cp.icr.io -u "$ENTITLED_REGISTRY_USER" --password-stdin
+          echo "$ACR_PASSWORD" | docker login ss151camdmzue2acr.azurecr.io -u "$ACR_USERNAME" --password-stdin
+
+      - name: Pull and Tag IBM Images
+        run: |
+          config_file=config/ibm-images-config.yaml
+          push_registry=$(yq '.push_registry' $config_file)
+          count=$(yq '.images | length' $config_file)
+
+          for i in $(seq 0 $((count - 1))); do
+            name=$(yq ".images[$i].name" $config_file)
+            tag=$(yq ".images[$i].tag" $config_file)
+
+            src="cp.icr.io/cp/$name:$tag"
+            dst="$push_registry/$name:$tag"
+
+            echo "Pulling $src..."
+            docker pull "$src"
+
+            echo "Tagging $src as $dst..."
+            docker tag "$src" "$dst"
+
+            echo "Tagged image: $dst"
+          done
