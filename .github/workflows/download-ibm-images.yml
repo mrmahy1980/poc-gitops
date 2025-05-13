@@ -29,23 +29,23 @@ jobs:
       - name: Pull, Tag, and Push IBM Images to Docker Hub
         run: |
           config_file=config/ibm-images-config.yaml
-          push_registry=$(yq '.push_registry' $config_file)
-          count=$(yq '.images | length' $config_file)
+          push_registry=$(yq '.push_registry' "$config_file" | tr -d '"')
+          count=$(yq '.images | length' "$config_file")
 
           for i in $(seq 0 $((count - 1))); do
-            name=$(yq ".images[$i].name" $config_file)
-            tag=$(yq ".images[$i].tag" $config_file)
+            name=$(yq ".images[$i].name" "$config_file" | tr -d '"')
+            tag=$(yq ".images[$i].tag" "$config_file" | tr -d '"')
 
             src="cp.icr.io/cp/$name:$tag"
             basename=$(basename "$name")
             dst="$push_registry/$basename:$tag"
 
             echo "Pulling $src..."
-            docker pull "$src"
+            docker pull $src
 
             echo "Tagging as $dst..."
-            docker tag "$src" "$dst"
+            docker tag $src $dst
 
             echo "Pushing to Docker Hub: $dst"
-            docker push "$dst"
+            docker push $dst
           done
